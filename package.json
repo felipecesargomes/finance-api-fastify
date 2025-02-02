@@ -1,0 +1,45 @@
+{
+  "name": "finance-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+     "next": "npx ts-node -r tsconfig-paths/register knexfile.ts",
+    "migrate": "npx ts-node -r tsconfig-paths/register knexfile.ts migrate:latest",
+    "migrate:rollback": "npx ts-node -r tsconfig-paths/register knexfile.ts migrate:rollback",
+    "test": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felipecesargomes/finance-api-fastify.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/felipecesargomes/finance-api-fastify/issues"
+  },
+  "homepage": "https://github.com/felipecesargomes/finance-api-fastify#readme",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "fastify": "^5.2.1",
+    "fastify-cookie": "^5.6.1",
+    "knex": "^3.1.0",
+    "sqlite3": "^5.1.7",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.0",
+    "@types/supertest": "^6.0.2",
+    "install": "^0.13.0",
+    "supertest": "^7.0.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.4"
+  }
+}
