@@ -8,7 +8,7 @@ export async function checkSessionIdExists(request: FastifyRequest, reply: Fasti
     sessionId = randomUUID();
     reply.setCookie('sessionId', sessionId, {
       path: '/',
-      maxAge: 7 * 24 * 60 * 60 // 7 dias (em segundos)
+      maxAge: 7 * 24 * 60 * 60
     });
   }
 }

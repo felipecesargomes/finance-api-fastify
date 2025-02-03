@@ -1,8 +1,8 @@
-import knex from 'knex';
+import { knex, Knex } from 'knex';
 import path from 'path';
 import { env } from './env';
 
-export const dbConfig = {
+export const dbConfig: Knex.Config = {
   client: 'sqlite3',
   connection: {
     filename: path.resolve(__dirname, '..', env.DATABASE_URL)

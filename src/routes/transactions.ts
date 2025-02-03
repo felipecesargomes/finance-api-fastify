@@ -6,12 +6,11 @@ import { z } from 'zod';
 import { checkSessionIdExists } from '../middlewares/checkSessionIdExists';
 
 async function transactionsRoutes(app: FastifyInstance, options: FastifyPluginOptions) {
-  // Exemplo de hook global para este plugin
+
   app.addHook('preHandler', async (request, reply) => {
     console.log(`[${request.method}] ${request.url}`);
   });
 
-  // Rota para criar uma nova transação
   app.post(
     '/',
     { preHandler: [checkSessionIdExists] },
@@ -35,7 +34,6 @@ async function transactionsRoutes(app: FastifyInstance, options: FastifyPluginOp
     }
   );
 
-  // Rota para listar todas as transações (filtradas pelo sessionId)
   app.get(
     '/',
     { preHandler: [checkSessionIdExists] },
@@ -46,7 +44,6 @@ async function transactionsRoutes(app: FastifyInstance, options: FastifyPluginOp
     }
   );
 
-  // Rota para obter detalhes de uma transação específica
   app.get(
     '/:id',
     { preHandler: [checkSessionIdExists] },
@@ -65,7 +62,6 @@ async function transactionsRoutes(app: FastifyInstance, options: FastifyPluginOp
     }
   );
 
-  // Rota para obter o resumo (soma dos amounts)
   app.get(
     '/summary',
     { preHandler: [checkSessionIdExists] },

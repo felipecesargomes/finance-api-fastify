@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-     "next": "npx ts-node -r tsconfig-paths/register knexfile.ts",
+    "knex": "npx knex",
     "migrate": "npx ts-node -r tsconfig-paths/register knexfile.ts migrate:latest",
     "migrate:rollback": "npx ts-node -r tsconfig-paths/register knexfile.ts migrate:rollback",
     "test": "vitest"

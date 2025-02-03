@@ -8,3 +8,18 @@
 ![dotenv](https://img.shields.io/badge/dotenv-ECD53F?style=for-the-badge&logo=dotenv&logoColor=black)
 ![zod](https://img.shields.io/badge/zod-000000?style=for-the-badge&logo=zod&logoColor=white)
 
+## Instalações Frameworks e Bibliotecas
+
+`npm install knex --save`
+
+`npm install sqlite3`
+
+``
+
+## Variáveis de ambiente
+
+Para configurar as ENVs, segue abaixo as variáveis desse projeto:
+
+DATABASE_URL=./db/app.db
+PORT=
+NODE_ENV=development
