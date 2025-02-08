@@ -1,7 +1,6 @@
-// src/app.ts
 import Fastify from 'fastify';
 import cookie from '@fastify/cookie';
-//import { db } from './database';
+import db from './database';
 import transactionsRoutes from './routes/transactions';
 
 const app = Fastify();
