@@ -13,7 +13,6 @@ async function transactionsRoutes(app: FastifyInstance, options: FastifyPluginOp
 
   app.post(
     '/',
-    { preHandler: [checkSessionIdExists] },
     async (request, reply) => {
       const createTransactionBodySchema = z.object({
         title: z.string(),
@@ -21,14 +20,23 @@ async function transactionsRoutes(app: FastifyInstance, options: FastifyPluginOp
         type: z.enum(['credit', 'debit'])
       });
       const { title, amount, type } = createTransactionBodySchema.parse(request.body);
-      const { sessionId } = request.cookies as { sessionId: string };
+      let { sessionId } = request.cookies as { sessionId?: string };
+
+      if (!sessionId) {
+        sessionId = randomUUID();
+        reply.setCookie('sessionId', sessionId, {
+          path: '/',
+          maxAge: 60 * 60 * 24 * 7, // 7 days
+        });
+      }
+
       const finalAmount = type === 'debit' ? amount * -1 : amount;
       await db('transactions').insert({
         id: randomUUID(),
         title,
         amount: finalAmount,
         sessionId,
-        createdAt: new Date()
+        createdAt: new Date().toISOString() // Ensure createdAt is a string
       });
       reply.status(201).send();
     }
