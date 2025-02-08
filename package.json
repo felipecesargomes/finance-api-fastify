@@ -1,14 +1,16 @@
 {
   "name": "finance-api",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Finance API using Fastify",
+  "main": "src/app.ts",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev": "ts-node-dev src/server.ts",
     "knex": "npx knex",
     "migrate": "npx ts-node -r tsconfig-paths/register knexfile.ts migrate:latest",
     "migrate:rollback": "npx ts-node -r tsconfig-paths/register knexfile.ts migrate:rollback",
-    "test": "vitest"
+    "test": "vitest",
+    "build": "tsc",
+    "start": "node dist/server.js"
   },
   "repository": {
     "type": "git",
@@ -25,10 +27,10 @@
   "dependencies": {
     "dotenv": "^16.4.7",
     "fastify": "^5.2.1",
-    "fastify-cookie": "^5.6.1",
     "knex": "^3.1.0",
     "sqlite3": "^5.1.7",
-    "zod": "^3.24.1"
+    "zod": "^3.24.1",
+    "@fastify/cookie": "^6.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.13.0",
