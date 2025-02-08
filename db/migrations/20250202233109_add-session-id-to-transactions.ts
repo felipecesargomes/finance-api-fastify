@@ -1,9 +1,12 @@
-import type { Knex } from "knex";
+import { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
-  await knex.schema.alterTable('transactions', (table) => {
-    table.uuid('sessionId').after('id').index().notNullable();
-  });
+  const hasColumn = await knex.schema.hasColumn('transactions', 'sessionId');
+  if (!hasColumn) {
+    await knex.schema.alterTable('transactions', (table) => {
+      table.string('sessionId', 36).notNullable();
+    });
+  }
 }
 
 export async function down(knex: Knex): Promise<void> {
@@ -11,4 +14,3 @@ export async function down(knex: Knex): Promise<void> {
     table.dropColumn('sessionId');
   });
 }
-
