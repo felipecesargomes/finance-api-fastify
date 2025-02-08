@@ -10,11 +10,9 @@
 
 ## Instalações Frameworks e Bibliotecas
 
-`npm install knex --save`
+Para instalar as depedências rode o npm install
 
-`npm install sqlite3`
-
-``
+`npm install`
 
 ## Variáveis de ambiente
 
