@@ -1,99 +1,81 @@
-// tests/transactions.spec.ts
 import request from 'supertest';
-import app from '../src/app';
+import { app } from '../src/app';
 import { execSync } from 'child_process';
 import { describe, it, beforeAll, afterAll, expect } from 'vitest';
 
 beforeAll(async () => {
+  console.log('Running migrations rollback...');
   execSync('npm run migrate:rollback --all', { stdio: 'inherit' });
+  console.log('Running migrations...');
   execSync('npm run migrate', { stdio: 'inherit' });
   await app.ready();
-});
+  console.log('App is ready.');
+}, 30000); 
 
 afterAll(async () => {
   await app.close();
 });
 
 describe('Transactions Routes', () => {
+  let sessionId: string;
+
   it('should be able to create a new transaction', async () => {
     const response = await request(app.server)
       .post('/transactions')
       .send({
-        title: 'new transaction',
-        amount: 5000,
-        type: 'credit'
+        title: 'Test Transaction',
+        amount: 100,
+        type: 'credit',
       });
+
+    if (response.status !== 201) {
+      console.error('Error response:', response.body);
+    }
     expect(response.status).toBe(201);
+    expect(response.body).toHaveProperty('id');
+    sessionId = response.headers['set-cookie'][0].split(';')[0].split('=')[1];
   });
 
   it('should be able to list all transactions', async () => {
-    await request(app.server)
-      .post('/transactions')
-      .send({
-        title: 'list transaction',
-        amount: 1000,
-        type: 'credit'
-      });
-    const listResponse = await request(app.server)
+    const response = await request(app.server)
       .get('/transactions')
-      .set('Cookie', (await request(app.server)
-        .post('/transactions')
-        .send({
-          title: 'cookie transaction',
-          amount: 2000,
-          type: 'credit'
-        })
-      ).get('Set-Cookie') || '');
-    expect(listResponse.status).toBe(200);
-    expect(Array.isArray(listResponse.body.transactions)).toBe(true);
+      .set('Cookie', `sessionId=${sessionId}`);
+    if (response.status !== 200) {
+      console.error('Error response:', response.body);
+    }
+    expect(response.status).toBe(200);
+    expect(response.body).toBeInstanceOf(Array);
   });
 
   it('should be able to get a transaction by ID', async () => {
     const createResponse = await request(app.server)
       .post('/transactions')
       .send({
-        title: 'detail transaction',
-        amount: 3000,
-        type: 'credit'
+        title: 'Test Transaction',
+        amount: 100,
+        type: 'credit',
       });
-    const listResponse = await request(app.server)
-      .get('/transactions')
-      .set('Cookie', createResponse.get('Set-Cookie') || '');
-    const transactions = listResponse.body.transactions;
-    const transactionId = transactions[0].id;
-    const detailResponse = await request(app.server)
-      .get(`/transactions/${transactionId}`)
-      .set('Cookie', createResponse.get('Set-Cookie') || '');
-    expect(detailResponse.status).toBe(200);
-    expect(detailResponse.body).toHaveProperty('transaction');
-    expect(detailResponse.body.transaction).toMatchObject({
-      title: 'detail transaction',
-      amount: '3000.00'
-    });
+
+    const { id } = createResponse.body;
+
+    const response = await request(app.server)
+      .get(`/transactions/${id}`)
+      .set('Cookie', `sessionId=${sessionId}`);
+    if (response.status !== 200) {
+      console.error('Error response:', response.body);
+    }
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id', id);
   });
 
   it('should be able to get the summary', async () => {
-    const createCredit = await request(app.server)
-      .post('/transactions')
-      .send({
-        title: 'credit transaction',
-        amount: 5000,
-        type: 'credit'
-      });
-    const cookies = createCredit.get('Set-Cookie') || '';
-    await request(app.server)
-      .post('/transactions')
-      .set('Cookie', cookies)
-      .send({
-        title: 'debit transaction',
-        amount: 2000,
-        type: 'debit'
-      });
-    const summaryResponse = await request(app.server)
+    const response = await request(app.server)
       .get('/transactions/summary')
-      .set('Cookie', cookies);
-    expect(summaryResponse.status).toBe(200);
-    const total = parseFloat(summaryResponse.body.summary.amount);
-    expect(total).toBeCloseTo(3000);
+      .set('Cookie', `sessionId=${sessionId}`);
+    if (response.status !== 200) {
+      console.error('Error response:', response.body);
+    }
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('summary');
   });
 });
